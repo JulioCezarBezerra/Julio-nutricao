@@ -9,12 +9,10 @@ botaoAdicionar.addEventListener("click", function(event){
     //cria a tr e td (lista)
     var pacienteTr = montaTr(paciente);
 
-    var erro = validaPaciente(paciente)
+    var erros = validaPaciente(paciente);
 
-
-    if(erro.length > 0){
-        var mensagemErro = document.querySelector('#mensagem-erro');
-        mensagemErro =
+    if(erros.length > 0 ){
+       exibeMensagensDeErro(erros);
         return;
     }
     
@@ -24,7 +22,20 @@ botaoAdicionar.addEventListener("click", function(event){
     tabela.appendChild(pacienteTr);
 
     form.reset();
+    var mensagensErro = document.querySelector("#mensagens-erro");
+    mensagensErro.innerHTML = "";
 })
+
+function exibeMensagensDeErro(erros){
+    var ul = document.querySelector("#mensagens-erro");
+    ul.innerHTML = "";
+
+    erros.forEach(function(erro){
+        var li = document.createElement("li");
+        li.textContent = erro;
+        ul.appendChild(li);
+    });
+}
 
 function obtemPacienteDoFormulario(form) {
 
@@ -63,10 +74,33 @@ function montaTd(dado,classe){
 }
 
 function validaPaciente(paciente) {
-    if(validaPeso(paciente.peso)){
-        return "";
-    }else{
-        return "O peso é invalido";
+
+    var erros = [];
+
+    if(paciente.nome.length == 0){
+        erros.push("DIGITE SEU NOME!");
     }
 
+    if(!validaPeso(paciente.peso)){
+        erros.push("PESO É INVÁLIDO!!");
+    }
+
+    if(!validaAltura(paciente.altura)) {
+        erros.push("ALTURA É INVÁLIDA!!");
+    }
+
+    if(paciente.gordura.length == 0){
+        erros.push("DIGITE O SEU PERCENTUAL DE GORDURA!");
+    }
+
+    if(paciente.peso.length == 0){
+        erros.push("O PESO NÃO PODE FICAR EM BRANCO.")
+    }
+
+    if(paciente.altura.length == 0){
+        erros.push("ALTURA NÃO PODE FICAR EM BRANCO.")
+    }
+
+    return erros;
 }
+
